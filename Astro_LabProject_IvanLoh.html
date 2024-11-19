@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light Speed Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        header {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #4682b4;
+            color: white;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .introduction {
+            text-align: left;
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        .introduction img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4682b4;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #5a9bd4;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e6f7ff;
+            border: 1px solid #b3e5fc;
+            border-radius: 5px;
+        }
+        canvas {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+        .speed-info {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 600px;
+        }
+        .speed-info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Light Speed Experiment</h1>
+		<h2>Astronomy Lab Project</h2>
+		<h2>Ivan Loh</h2>
+        <p>Discover the differences between the speed of light and everyday speeds!</p>
+    </header>
+    
+    <div class="introduction">
+		<h2>What is Light Year?</h2>
+        <p>
+            One of the most commonly used units for measuring astronomical distances is the <strong>light-year</strong>. But what exactly is a light-year? According to NASA: 
+        </p>
+        <blockquote>
+            <em>A light-year is the distance light travels in one year. Light moves through interstellar space at an incredible speed of 186,000 miles (300,000 kilometers) per second, covering approximately 5.88 trillion miles (9.46 trillion kilometers) in a single year.</em>
+        </blockquote>
+        <p>
+            At the beginning of the semester, we explored the concept of <strong>light speed</strong>, one of the most fundamental topics in Astronomy. While we know that light travels at a constant speed, how does its speed compare to other things on Earth?
+        </p>
+        <h2>What is light?</h2>
+        <p>
+            Light is a form of electromagnetic radiation, a type of energy that travels through space as oscillating electric and magnetic fields. It exhibits wave-particle duality, behaving both as a wave and as particles called photons. Photons are tiny packets of energy that travel at the speed of light in a vacuum, and that is what we are comparing on this website.
+        </p>
+        <img src="photon.jpg" alt="Photons and Wave-Particle Duality">
+		<h2>Understanding the Speed of Light</h2>
+        <p>
+            This website is designed to help you better understand the speed of light and how it compares to everyday objects.
+        </p>
+        <br><br><hr><br><br>
+    </div>
+
+    <div class="container">
+        <h2>Calculate Light Travel</h2>
+        <p>Enter the time it takes for you traveled and the distance:</p>
+        <label for="time">Time (minutes): </label>
+        <input type="number" id="time" placeholder="e.g., 60" min="0" step="1">
+        <br>
+        <label for="distance">Distance (km): </label>
+        <input type="number" id="distance" placeholder="e.g., 5" min="0" step="0.1">
+        <br>
+        <button onclick="calculateLightSpeed()">Calculate</button>
+        <div id="result"></div>
+        <br><br><hr><br><br>
+        <h2>Light Speed vs. Transportation Speed</h2>
+        <div class="speed-info">
+            <h2>Speeds</h2>
+            <p><strong>Human Walk:</strong> 5 km/h</p>
+            <p><strong>Car:</strong> 100 km/h</p>
+            <p><strong>Airplane:</strong> 900 km/h</p>
+            <p><strong>Rocket:</strong> 40,284 km/h</p>
+            <p><strong>Light Speed:</strong> 1,079,252,848.8 km/h</p>
+        </div>
+        <canvas id="speedCanvas"></canvas>
+    </div>
+		<br><br><br><br><hr><br><br>
+		<h2>Citation:</h2>
+		<p>
+		Nasa, “What is a light-year?"&emsp;https://science.nasa.gov/exoplanets/what-is-a-light-year/
+        </p>
+		<p>
+		Livescience, “What are photons?“&emsp;https://www.livescience.com/what-are-photons
+        </p>
+		<p>
+		inchcalculator, “Speed of Light Conversion Calculator“&emsp;https://www.inchcalculator.com/convert/from-speed-of-light/
+        </p>
+		<p>
+		spacecentre, “How fast can a rocket go?“&emsp;https://www.spacecentre.nz/resources/faq/spaceflight/rocket-speed.html#:~:text=Here%20are%20a%20few%20examples,known%20as%20Earth%20escape%20velocity.
+        </p>
+		<p>
+		thinkmetric, “Speed“&emsp;https://thinkmetric.uk/basics/speed/
+        </p>
+    <script>
+        const speeds = {
+            walk: 5, 
+            car: 100, 
+            airplane: 900, 
+            rocket: 40284, 
+            light: 1079252848.8 
+        };
+
+        const canvasWidth = 1600;
+        const canvasHeight = 4500;
+        const scaleFactor = canvasWidth / (speeds.rocket * 200);
+
+        const canvas = document.getElementById('speedCanvas');
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        const ctx = canvas.getContext('2d');
+
+        function calculateLightSpeed() {
+            const timeMinutes = parseFloat(document.getElementById('time').value);
+            const distance = parseFloat(document.getElementById('distance').value);
+
+            if (isNaN(timeMinutes) || isNaN(distance) || timeMinutes <= 0 || distance <= 0) {
+                alert("Please enter valid positive numbers for time and distance.");
+                return;
+            }
+			//calculate result according to input
+            const timeHours = timeMinutes / 60; 
+            const personSpeed = distance / timeHours;
+            const lightDistance = speeds.light * timeHours; 
+            const lightComparison = lightDistance / distance;
+
+            document.getElementById('result').innerHTML = `
+                <p>You walk at approximately ${personSpeed.toFixed(2)} km/h.</p>
+                <p>In the same time, light can travel ${lightDistance.toLocaleString()} km.</p>
+                <p>That's about ${lightComparison.toFixed(2)} times the distance you traveled!</p>
+            `;
+        }
+		//draw bar according to speed value 
+        function drawBar(label, speed, color, yPosition) {
+            const barWidth = Math.min(speed * scaleFactor, canvasWidth);
+            ctx.fillStyle = color;
+            ctx.fillRect(0, yPosition, barWidth, 20);
+            ctx.fillStyle = "#000";
+            ctx.fillText(`${label}: ${speed.toLocaleString()} km/h`, 10, yPosition - 5);
+        }
+
+        function drawLightSpeedBar(speed, color, startY) {
+            const segmentWidth = canvasWidth;
+            const segments = Math.ceil(speed / (segmentWidth / scaleFactor));
+
+            for (let i = 0; i < segments; i++) {
+                const barWidth = i === segments - 1 ? (speed % (segmentWidth / scaleFactor)) * scaleFactor : segmentWidth;
+                ctx.fillStyle = color;
+                ctx.fillRect(0, startY + i * 30, barWidth, 20);
+            }
+
+            ctx.fillStyle = "#000";
+            ctx.fillText(`Light Speed: ${speed.toLocaleString()} km/h`, 10, startY - 5);
+        }
+
+        function drawSpeeds() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "14px Arial";
+			//draw bars
+            drawBar("Human Walk", speeds.walk, "purple", 30);
+            drawBar("Car", speeds.car, "red", 70);
+            drawBar("Airplane", speeds.airplane, "green", 110);
+            drawBar("Rocket", speeds.rocket, "orange", 150);
+            drawLightSpeedBar(speeds.light, "yellow", 200);
+        }
+
+        drawSpeeds();
+    </script>
+</body>
+</html>
